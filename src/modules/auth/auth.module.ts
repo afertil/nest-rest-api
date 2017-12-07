@@ -14,10 +14,10 @@ import { AuthController } from './auth.controller';
   components: [AuthService, JwtStrategy],
   controllers: [AuthController],
 })
-export class AuthModule implements NestModule {
-  public configure(consumer: MiddlewaresConsumer) {
-    consumer
-      .apply(passport.authenticate('jwt', { session: false }))
-      .forRoutes({ path: '/auth/authorized', method: RequestMethod.ALL });
-  }
+export class AuthModule /* implements NestModule */ {
+  // public configure(consumer: MiddlewaresConsumer) {
+  //   consumer
+  //     .apply(passport.authenticate('jwt', { session: false }))
+  //     .forRoutes({ path: '/auth/authorized', method: RequestMethod.ALL });
+  // }
 }

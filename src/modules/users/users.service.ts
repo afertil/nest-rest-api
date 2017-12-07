@@ -6,7 +6,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 @Component()
 export class UsersService {
   constructor(
-    @Inject('UserModelToken') private readonly UserModel: Model<User>) {}
+    @Inject('UserModelToken') private readonly UserModel: Model<User>
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const createdUser = new this.UserModel(createUserDto);
