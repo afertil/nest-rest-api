@@ -1,6 +1,7 @@
-import { Controller, Post, HttpStatus, HttpCode, Get, Response, Body } from '@nestjs/common';
+import { Controller, Post, HttpStatus, HttpCode, Get, Request, Response, Body } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
+import { UsersService } from './../users/users.service';
 
 @Controller('auth')
 export class AuthController {
@@ -9,13 +10,12 @@ export class AuthController {
   ) {}
 
   @Post('/login')
-  public async login(
-    @Response() res, 
-    @Body('email') email, 
-    @Body('password') password)
-  {
-      const auth = await this.authService.login(email, password);
-      res.status(HttpStatus.OK).json(auth);
+  public async login(@Request() req, @Response() res) {
+    const body = req.body;
+
+    // Throw error if body is missing
+    const token = await this.authService.sign(body);
+    res.status(HttpStatus.OK).json('Bearer ' + token);
   }
 
   @Post('token')
