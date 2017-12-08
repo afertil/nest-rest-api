@@ -22,7 +22,7 @@ export class UsersService {
     return await this.UserModel.findById(id).exec();
   }
 
-  async findOne(options: Object): Promise<User | null> {
+  async findOne(options: any): Promise<User | null> {
     return await this.UserModel.findOne(options).exec();
   }
 }

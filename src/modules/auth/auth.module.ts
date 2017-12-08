@@ -6,7 +6,7 @@ import { UsersModule } from './../users/users.module';
 
 // Components
 import { AuthService } from './auth.service';
-import { JwtStrategy } from './passport/jwt.strategy';
+import { JwtService } from './jwt/jwt.service';
 
 // Controllers
 import { AuthController } from './auth.controller';
@@ -15,7 +15,7 @@ import { AuthController } from './auth.controller';
   modules: [UsersModule],
   components: [
     AuthService,
-    JwtStrategy
+    JwtService
   ],
   controllers: [AuthController],
 })

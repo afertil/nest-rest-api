@@ -1,45 +1,51 @@
-import { Component, Inject, forwardRef } from '@nestjs/common';
+import { Component, HttpStatus, HttpException } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { HttpException } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
 
 import { UsersService } from './../users/users.service';
+import { User } from '../users/interfaces/user.interface';
+import { JwtService } from './jwt/jwt.service';
 
 @Component()
 export class AuthService {
 
   constructor(
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService
   ) {}
 
-  async createToken() {
-    const expiresIn = 60 * 60, secretOrKey = 'secret';
-    const user = { email: 'thisis@example.com' };
-    const token = jwt.sign(user, secretOrKey, { expiresIn });
-    console.log(token);
-    return {
-      expires_in: expiresIn,
-      access_token: token,
-    };
-  }
+  /**
+   * Verifies the user used the right credentials
+   * 
+   * @param signedUser 
+   * 
+   * @returns {Boolean} isValid - true if the user can be authenticated
+   */
+  private async checkUserPassword(signedUser: User, password: string): Promise<Boolean> {
+    if (signedUser.password !== password) {
+      return false;
+    }
 
-  async validateUser(signedUser): Promise<Boolean> {
-    // const user = await this.UserModel.findOne(options).exec();
     return true;
   }
 
-  async sign(credentials: { email: string, password: string }): Promise<string> {
-    
-    const user = await this.usersService.findOne(credentials);
+  /**
+   * Signs the user to the application
+   * 
+   * @param credentials - The user credentials
+   * @returns tokens - The access and the refresh token to authenticate the user 
+   */
+  async sign(credentials: { email: string, password: string }): Promise<any[]> {
 
-    // Throw error if no user
+    const user = await this.usersService.findOne({ email: credentials.email} );
+    if (!user) throw new HttpException('The specified user does not exists', HttpStatus.BAD_REQUEST);
 
-    const payload = {
-      id: user._id,
-      email: user.email,
-    };
+    const isValid = await this.checkUserPassword(user, credentials.password);
+    if (!isValid) throw new HttpException('The email/password combinaison is invalid', HttpStatus.BAD_REQUEST);   
 
-    return await jwt.sign(payload, 'value', {});
+    const tokens = await this.jwtService.createToken(user);
+
+    return tokens;
     
   }
 }
