@@ -33,9 +33,9 @@ export class AuthService {
    * Signs the user to the application
    * 
    * @param credentials - The user credentials
-   * @returns tokens - The access and the refresh token to authenticate the user 
+   * @returns data - The access and the refresh token to authenticate the user and the user
    */
-  async sign(credentials: { email: string, password: string }): Promise<any[]> {
+  async sign(credentials: { email: string, password: string }): Promise<any> {
 
     const user = await this.usersService.findOne({ email: credentials.email} );
     if (!user) throw new HttpException('The specified user does not exists', HttpStatus.BAD_REQUEST);
@@ -45,7 +45,7 @@ export class AuthService {
 
     const tokens = await this.jwtService.createToken(user);
 
-    return tokens;
+    return { tokens, user };
     
   }
 }

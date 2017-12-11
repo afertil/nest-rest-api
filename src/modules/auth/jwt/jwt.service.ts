@@ -23,12 +23,12 @@ export class JwtService {
       id: user._id,
       email: user.email,
     };
-    const accessToken = `Bearer ${await jwt.sign(payload, APP_CONFIG.jwtSecret, {
+    const accessToken = await jwt.sign(payload, APP_CONFIG.jwtSecret, {
       expiresIn: APP_CONFIG.accessTokenExpires
-    })}`;
-    const refreshToken = `Bearer ${await jwt.sign(payload, APP_CONFIG.jwtSecret, {
+    });
+    const refreshToken = await jwt.sign(payload, APP_CONFIG.jwtSecret, {
       expiresIn: APP_CONFIG.refreshTokenExpires
-    })}`;
+    });
 
     return { accessToken, refreshToken };
   }

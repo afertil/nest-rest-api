@@ -16,7 +16,8 @@ export class AuthController {
     if (!body) throw new HttpException('Body is missing', HttpStatus.BAD_REQUEST);
     if (!body.email || !body.password) throw new HttpException('Missing email or password', HttpStatus.BAD_REQUEST);
 
-    const tokens = await this.authService.sign(body);
-    res.status(HttpStatus.OK).json(tokens);
+    const data = await this.authService.sign(body);
+
+    res.status(HttpStatus.OK).json(data);
   }
 }
