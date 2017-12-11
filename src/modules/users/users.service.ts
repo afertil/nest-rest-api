@@ -1,7 +1,6 @@
 import { Model } from 'mongoose';
 import { Component, Inject } from '@nestjs/common';
 import { User } from './interfaces/user.interface';
-// import { CreateUserDto } from './dto/create-user.dto';
 
 @Component()
 export class UsersService {
