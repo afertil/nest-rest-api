@@ -1,31 +1,39 @@
-import { Middleware, NestMiddleware } from '@nestjs/common';
+import { Middleware, NestMiddleware, HttpException, HttpStatus } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 
 import * as jwt from 'jsonwebtoken';
 import { APP_CONFIG } from '../../../config';
+import { UsersService } from './../../users/users.service';
 
 @Middleware()
 export class AuthMiddleware implements NestMiddleware {
+
+  constructor(
+    private readonly usersService: UsersService
+  ) {}
 
   resolve() {
     return async (req: Request, res: Response, next: NextFunction) => {
 
       if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-        let token = req.headers.authorization.split(' ')[1];
+        const token = req.headers.authorization.split(' ')[1];
 
         jwt.verify(token, APP_CONFIG.jwtSecret, (err, payload) => {      
           
           if(!err) {
-            
-            //confirm identity and check user permissions
+            const user = this.usersService.findById(payload.id);
+
+            if (!user) throw new HttpException('Unauthorized access', HttpStatus.BAD_REQUEST);
+
+            // Verify user exists on databse
             req.payload = payload; 
             next();
           } else {
-            return res.status(403).json(err);
+            throw new HttpException(err, HttpStatus.BAD_REQUEST);
           }
         });
       } else {
-        return res.status(401).json("You must provide a valid authenticated access token.");
+        throw new HttpException('Unauthorized access', HttpStatus.BAD_REQUEST);
       }
     }
   }     

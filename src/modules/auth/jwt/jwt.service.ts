@@ -15,7 +15,6 @@ export class JwtService {
    * Generates a new JWT token
    * 
    * @param {User} user - the user to create the payload for the JWT
-   * 
    * @returns {Promise} tokens - The access and the refresh token
    */
   async createToken(user: User): Promise<any> {

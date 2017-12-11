@@ -1,7 +1,7 @@
 import { Model } from 'mongoose';
 import { Component, Inject } from '@nestjs/common';
 import { User } from './interfaces/user.interface';
-import { CreateUserDto } from './dto/create-user.dto';
+// import { CreateUserDto } from './dto/create-user.dto';
 
 @Component()
 export class UsersService {
@@ -9,13 +9,13 @@ export class UsersService {
     @Inject('UserModelToken') private readonly UserModel: Model<User>
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const createdUser = new this.UserModel(createUserDto);
+  async create(user: User): Promise<User> {
+    const createdUser = new this.UserModel(user);
     return await createdUser.save();
   }
 
-  async findAll(): Promise<User[]> {
-    return await this.UserModel.find().exec();
+  async findAll(options?: any): Promise<User[]> {
+    return await this.UserModel.find(options).exec();
   }
 
   async findById(id: string): Promise<User | null> {
@@ -24,5 +24,14 @@ export class UsersService {
 
   async findOne(options: any): Promise<User | null> {
     return await this.UserModel.findOne(options).exec();
+  }
+
+  async update(id: number, newValue: User): Promise<User | null> {
+    console.log(id);
+    return await this.UserModel.findByIdAndUpdate(id, newValue).exec();
+  }
+
+  async delete(id: number): Promise<User | null> {
+    return await this.UserModel.findByIdAndRemove(id).exec();
   }
 }
