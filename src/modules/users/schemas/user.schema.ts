@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-export const schema = new Schema({
+let user = new Schema({
   name: String,
   age: Number,
   username: { type: String, required: true, unique: true },
@@ -14,11 +14,18 @@ export const schema = new Schema({
 /**
  * On every save, add the date
  */
-schema.pre('save', function(next) {
+user.pre('save', function(next) {
   const currentDate = new Date();
 
   this.updated_at = currentDate;
   next();
 });
 
-export const UserSchema = schema;
+user.methods.toAuthJSON = function() {
+  return {
+    username: this.username,
+    email: this.email
+  }
+};
+
+export const UserSchema = user;

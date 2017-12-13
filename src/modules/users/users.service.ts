@@ -21,8 +21,8 @@ export class UsersService {
     return await this.UserModel.findById(id).exec();
   }
 
-  async findOne(options: any): Promise<User | null> {
-    return await this.UserModel.findOne(options).exec();
+  async findOne(options?: any, fields?: any): Promise<User | null> {
+    return await this.UserModel.findOne(options, fields).exec();
   }
 
   async update(id: number, newValue: User): Promise<User | null> {

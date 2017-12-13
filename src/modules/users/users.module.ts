@@ -22,8 +22,8 @@ export class UsersModule {
     consumer.apply(AuthMiddleware).forRoutes(
         { path: '/users', method: RequestMethod.GET },
         { path: '/users/:id', method: RequestMethod.GET },
-        // { path: '/users/:id', method: RequestMethod.PUT },
-        // { path: '/users/:id', method: RequestMethod.DELETE },
+        { path: '/users/:id', method: RequestMethod.PUT },
+        { path: '/users/:id', method: RequestMethod.DELETE },
     );
 }
 }

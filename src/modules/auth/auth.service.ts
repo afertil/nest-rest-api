@@ -37,8 +37,11 @@ export class AuthService {
    */
   async sign(credentials: { email: string, password: string }): Promise<any> {
 
-    const user = await this.usersService.findOne({ email: credentials.email} );
+    const user = await this.usersService.findOne({ email: credentials.email});
     if (!user) throw new HttpException('The specified user does not exists', HttpStatus.BAD_REQUEST);
+
+    // Serialize user
+    console.log(user);
 
     const isValid = await this.checkUserPassword(user, credentials.password);
     if (!isValid) throw new HttpException('The email/password combinaison is invalid', HttpStatus.BAD_REQUEST);   
@@ -46,6 +49,6 @@ export class AuthService {
     const tokens = await this.jwtService.createToken(user);
 
     return { tokens, user };
-    
+
   }
 }
