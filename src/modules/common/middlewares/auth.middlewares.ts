@@ -16,22 +16,19 @@ export class AuthMiddleware implements NestMiddleware {
     return async (req: Request, res: Response, next: NextFunction) => {
 
       if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-        const token = req.headers.authorization.split(' ')[1];
+        const token = req.headers.authorization.split(' ')[1];       
 
-        jwt.verify(token, APP_CONFIG.jwtSecret, (err, payload) => {      
+        try {
+          const payload = jwt.verify(token, APP_CONFIG.jwtSecret);
+          const user = await this.usersService.findById(payload.sub.id);
+    
+          if (!user) throw new HttpException('Unauthorized access', HttpStatus.BAD_REQUEST);
           
-          if(!err) {
-            const user = this.usersService.findById(payload.id);
-
-            if (!user) throw new HttpException('Unauthorized access', HttpStatus.BAD_REQUEST);
-
-            // Verify user exists on databse
-            req.payload = payload; 
-            next();
-          } else {
-            throw new HttpException(err, HttpStatus.BAD_REQUEST);
-          }
-        });
+          req.payload = payload; 
+          next();
+        } catch(err) {
+          throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+        }
       } else {
         throw new HttpException('Unauthorized access', HttpStatus.BAD_REQUEST);
       }
