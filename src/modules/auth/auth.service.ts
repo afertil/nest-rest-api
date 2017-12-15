@@ -40,14 +40,13 @@ export class AuthService {
     const user = await this.usersService.findOne({ email: credentials.email});
     if (!user) throw new HttpException('The specified user does not exists', HttpStatus.BAD_REQUEST);
 
-    // TODO: Serialize user
-
+    const serializedUser = user.schema.methods.serialize(user);
     const isValid = await this.checkUserPassword(user, credentials.password);
     if (!isValid) throw new HttpException('The email/password combinaison is invalid', HttpStatus.BAD_REQUEST);   
 
-    const tokens = await this.jwtService.generateToken(user);
+    const tokens = await this.jwtService.generateToken(serializedUser);
 
-    return { tokens, user };
+    return { tokens, serializedUser };
 
   }
   
@@ -60,10 +59,9 @@ export class AuthService {
   async refreshToken(token: string): Promise<any> {
     const user: User = await this.jwtService.verify(token);
 
-    // TODO: Serialize user
-
-    const tokens = await this.jwtService.generateToken(user);
+    const serializedUser = user.schema.methods.serialize(user);
+    const tokens = await this.jwtService.generateToken(serializedUser);
     
-    return { tokens, user };
+    return { tokens, serializedUser };
   }
 }

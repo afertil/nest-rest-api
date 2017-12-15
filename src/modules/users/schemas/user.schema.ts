@@ -1,8 +1,8 @@
 import { Schema } from 'mongoose';
 
-let user = new Schema({
+const user = new Schema({
   name: String,
-  age: Number,
+  age: { type: Number, min: 18, max: 99 },
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true },
   admin: Boolean,
@@ -10,6 +10,7 @@ let user = new Schema({
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now }
 });
+
 
 /**
  * On every save, add the date
@@ -21,10 +22,13 @@ user.pre('save', function(next) {
   next();
 });
 
-user.methods.toAuthJSON = function() {
+/**
+ * Serialize user to send it throw the JWT token
+ */
+user.methods.serialize = function(user) {
   return {
-    username: this.username,
-    email: this.email
+    username: user.username,
+    email: user.email
   }
 };
 

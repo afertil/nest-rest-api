@@ -5,6 +5,6 @@ export const usersProviders = [
   {
     provide: 'UserModelToken', // Deplace to a constants.ts
     useFactory: (connection: Connection) => connection.model('User', UserSchema),
-    inject: ['DbConnectionToken'], // Deplace to a constants.ts
+    inject: ['DbConnectionToken'] // Deplace to a constants.ts
   },
 ];
