@@ -14,19 +14,35 @@ export class UsersService {
   }
 
   async findAll(options?: any): Promise<User[]> {
-    return await this.UserModel.find(options).exec();
+    let users = await this.UserModel.find(options).exec();
+    const serializedUsers = users.map((user) => {
+      return user.schema.methods.serialize(user);
+    });
+
+    return serializedUsers;
   }
 
   async findById(id: string): Promise<User | null> {
-    return await this.UserModel.findById(id).exec();
+    let user = await this.UserModel.findById(id).exec();
+
+    if (user) {
+      user = user.schema.methods.serialize(user);
+    }
+
+    return user;
   }
 
   async findOne(options?: any, fields?: any): Promise<User | null> {
-    return await this.UserModel.findOne(options, fields).exec();
+    let user = await this.UserModel.findOne(options, fields).exec();
+
+    if (user) {
+      user = user.schema.methods.serialize(user);
+    }
+
+    return user;
   }
 
   async update(id: number, newValue: User): Promise<User | null> {
-    console.log(id);
     return await this.UserModel.findByIdAndUpdate(id, newValue).exec();
   }
 

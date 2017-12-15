@@ -24,8 +24,9 @@ export class JwtService {
 
     const payload = {
       sub: {
-        id: user._id,
-        email: user.email
+        id: user.id,
+        email: user.email,
+        username: user.username
       },
       iss: os.hostname()
     };

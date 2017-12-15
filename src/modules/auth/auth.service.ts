@@ -46,7 +46,7 @@ export class AuthService {
 
     const tokens = await this.jwtService.generateToken(serializedUser);
 
-    return { tokens, serializedUser };
+    return { tokens, user: serializedUser };
 
   }
   
@@ -62,6 +62,6 @@ export class AuthService {
     const serializedUser = user.schema.methods.serialize(user);
     const tokens = await this.jwtService.generateToken(serializedUser);
     
-    return { tokens, serializedUser };
+    return { tokens, user: serializedUser };
   }
 }

@@ -27,6 +27,7 @@ user.pre('save', function(next) {
  */
 user.methods.serialize = function(user) {
   return {
+    id: user._id,
     username: user.username,
     email: user.email
   }
