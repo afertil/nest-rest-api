@@ -1,27 +1,33 @@
-import { Component } from '@nestjs/common';
+import { Component, HttpStatus, HttpException } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { HttpException } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
+import * as os from 'os';
 
 import { APP_CONFIG } from '../../../config';
 import { User } from '../../users/interfaces/user.interface';
+import { UsersService } from './../../users/users.service';
 
 @Component()
 export class JwtService {
 
-  constructor() {}
+  constructor(
+    private readonly usersService: UsersService
+  ) {}
 
   /**
    * Generates a new JWT token
    * 
-   * @param {User} user - the user to create the payload for the JWT
+   * @param {User} user - The user to create the payload for the JWT
    * @returns {Promise} tokens - The access and the refresh token
    */
-  async createToken(user: User): Promise<any> {
+  async generateToken(user: User): Promise<any> {
 
     const payload = {
-      id: user._id,
-      email: user.email,
+      sub: {
+        id: user._id,
+        email: user.email
+      },
+      iss: os.hostname()
     };
     const accessToken = await jwt.sign(payload, APP_CONFIG.jwtSecret, {
       expiresIn: APP_CONFIG.accessTokenExpires
@@ -31,6 +37,25 @@ export class JwtService {
     });
 
     return { accessToken, refreshToken };
+  }
+  
+  /**
+   * Validates the token
+   * 
+   * @param {string} token - The JWT token to validate
+   */
+  async verify(token: string): Promise<User | null> {
+
+    try {
+      const payload = jwt.verify(token, APP_CONFIG.jwtSecret);
+      const user = await this.usersService.findById(payload.sub.id);
+
+      if (!user) throw new HttpException('Unauthorized access', HttpStatus.BAD_REQUEST);
+      
+      return user;
+    } catch(err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
 }

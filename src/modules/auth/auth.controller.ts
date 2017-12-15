@@ -10,7 +10,7 @@ export class AuthController {
   ) {}
 
   @Post('/login')
-  public async login(@Request() req, @Response() res) {
+  async login(@Request() req): Promise<any> {
     const body = req.body;
 
     if (!body) throw new HttpException('Body is missing', HttpStatus.BAD_REQUEST);
@@ -18,6 +18,13 @@ export class AuthController {
 
     const data = await this.authService.sign(body);
 
-    res.status(HttpStatus.OK).json(data);
+    return data;
+  }
+
+  @Post('/refresh-token')
+  async refreshToken(@Request() req): Promise<any> {
+    const body = req.body;
+
+    return await this.authService.refreshToken(body.token);
   }
 }

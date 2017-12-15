@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   /**
-   * Signs the user to the application
+   * Signs the user to the application by generating JWT tokens
    * 
    * @param credentials - The user credentials
    * @returns data - The access and the refresh token to authenticate the user and the user
@@ -40,15 +40,30 @@ export class AuthService {
     const user = await this.usersService.findOne({ email: credentials.email});
     if (!user) throw new HttpException('The specified user does not exists', HttpStatus.BAD_REQUEST);
 
-    // Serialize user
-    console.log(user);
+    // TODO: Serialize user
 
     const isValid = await this.checkUserPassword(user, credentials.password);
     if (!isValid) throw new HttpException('The email/password combinaison is invalid', HttpStatus.BAD_REQUEST);   
 
-    const tokens = await this.jwtService.createToken(user);
+    const tokens = await this.jwtService.generateToken(user);
 
     return { tokens, user };
 
+  }
+  
+  /**
+   * Generating new JWT tokens to keep the user authenticated
+   * 
+   * @param token
+   * @returns data - The new access and the refresh token to authenticate the user and the user
+   */
+  async refreshToken(token: string): Promise<any> {
+    const user: User = await this.jwtService.verify(token);
+
+    // TODO: Serialize user
+
+    const tokens = await this.jwtService.generateToken(user);
+    
+    return { tokens, user };
   }
 }
