@@ -27,7 +27,6 @@ export class ArticlesService {
   }
 
   async update(id: number, newValue: Article): Promise<Article | null> {
-    console.log(id);
     return await this.ArticleModel.findByIdAndUpdate(id, newValue).exec();
   }
 

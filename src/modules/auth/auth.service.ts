@@ -37,7 +37,7 @@ export class AuthService {
    */
   async sign(credentials: { email: string, password: string }): Promise<any> {
 
-    const user = await this.usersService.findOne({ email: credentials.email});
+    const user = await this.usersService.findOne({ email: credentials.email });
     if (!user) throw new HttpException('The specified user does not exists', HttpStatus.BAD_REQUEST);
 
     const serializedUser = user.schema.methods.serialize(user);

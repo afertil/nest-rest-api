@@ -6,8 +6,9 @@ const article = new Schema({
   title: { type: String, required: true },
   content: { type: String, required: true },
   photo: { data: Buffer, contentType: String },
-  author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  comments: { type: [String], required: true },
+  author: { type: String, required: true },
+  // author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  comments: { type: [String] },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now }
 });

@@ -24,7 +24,7 @@ export class JwtService {
 
     const payload = {
       sub: {
-        id: user.id,
+        _id: user._id,
         email: user.email,
         username: user.username
       },
@@ -49,7 +49,7 @@ export class JwtService {
 
     try {
       const payload = jwt.verify(token, APP_CONFIG.jwtSecret);
-      const user = await this.usersService.findById(payload.sub.id);
+      const user = await this.usersService.findById(payload.sub._id);
 
       if (!user) throw new HttpException('Unauthorized access', HttpStatus.BAD_REQUEST);
       

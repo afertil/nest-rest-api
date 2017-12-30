@@ -32,10 +32,10 @@ export class UsersService {
     return user;
   }
 
-  async findOne(options?: any, fields?: any): Promise<User | null> {
+  async findOne(options: any, fields?: any, isSerialized?: boolean): Promise<User | null> {
     let user = await this.UserModel.findOne(options, fields).exec();
 
-    if (user) {
+    if (user && isSerialized) {
       user = user.schema.methods.serialize(user);
     }
 

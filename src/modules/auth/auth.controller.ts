@@ -16,9 +16,7 @@ export class AuthController {
     if (!body) throw new HttpException('Body is missing', HttpStatus.BAD_REQUEST);
     if (!body.email || !body.password) throw new HttpException('Missing email or password', HttpStatus.BAD_REQUEST);
 
-    const data = await this.authService.sign(body);
-
-    return data;
+    return await this.authService.sign(body);
   }
 
   @Post('/refresh-token')

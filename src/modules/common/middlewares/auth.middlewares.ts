@@ -20,8 +20,9 @@ export class AuthMiddleware implements NestMiddleware {
 
         try {
           const payload = jwt.verify(token, APP_CONFIG.jwtSecret);
-          const user = await this.usersService.findById(payload.sub.id);
-
+          const user = await this.usersService.findById(payload.sub._id);
+console.log(payload);
+console.log(user);
           if (!user) throw new HttpException('Unauthorized access', HttpStatus.BAD_REQUEST);
           
           req.payload = payload; 
