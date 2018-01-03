@@ -58,10 +58,8 @@ export class AuthService {
    */
   async refreshToken(token: string): Promise<any> {
     const user: User = await this.jwtService.verify(token);
+    const tokens = await this.jwtService.generateToken(user);
 
-    const serializedUser = user.schema.methods.serialize(user);
-    const tokens = await this.jwtService.generateToken(serializedUser);
-    
-    return { tokens, user: serializedUser };
+    return { tokens, user: user };
   }
 }

@@ -52,7 +52,7 @@ export class JwtService {
       const user = await this.usersService.findById(payload.sub._id);
 
       if (!user) throw new HttpException('Unauthorized access', HttpStatus.BAD_REQUEST);
-      
+
       return user;
     } catch(err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);

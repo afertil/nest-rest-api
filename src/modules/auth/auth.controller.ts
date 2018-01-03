@@ -23,6 +23,6 @@ export class AuthController {
   async refreshToken(@Request() req): Promise<any> {
     const body = req.body;
 
-    return await this.authService.refreshToken(body.token);
+    return await this.authService.refreshToken(body.refreshToken);
   }
 }
